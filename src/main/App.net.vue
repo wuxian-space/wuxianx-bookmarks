@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getTree } from '@/api/bookmarks';
-import UpdateGithubFile from '@/components/update-github-file.vue';
 
 const tree = ref([]);
 
 try {
   getTree().then((res: any) => {
+    console.log(`🚀 > getTree > res:`, res);
     tree.value = res;
   });
 } catch (error) {
@@ -15,6 +15,5 @@ try {
 </script>
 
 <template>
-  <UpdateGithubFile :content="[{name: 'abc'}, {name: 'def'}]" />
   <pre>{{ tree }}</pre>
 </template>

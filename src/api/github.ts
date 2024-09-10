@@ -6,11 +6,12 @@ const octokit = new Octokit({
 });
 
 export async function createOrUpdateFileContents(content: string) {
-  const name = 'yuexiaoliang'
-  const email = '2220124666@qq.com';
   const owner = 'yuexiaoliang';
-  const repo = 'restapi-test';
-  const path = 'ttttr32.js';
+  const repo = 'browser-bookmarks-site';
+  const path = 'bookmarks-data.json';
+
+  const authorName = 'yuexiaoliang'
+  const authorEmail = '2220124666@qq.com';
 
   const data: RestEndpointMethodTypes["repos"]["createOrUpdateFileContents"]["parameters"] = {
     owner,
@@ -18,7 +19,7 @@ export async function createOrUpdateFileContents(content: string) {
     path,
     message: `updated ${path}`,
     content: encode(content),
-    author: { name, email },
+    author: { name: authorName, email: authorEmail },
   }
 
   const { data: repoFiles } = await octokit.rest.repos

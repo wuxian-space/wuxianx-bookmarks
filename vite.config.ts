@@ -26,13 +26,11 @@ const createRollupOptions = () => {
   const result: BuildOptions['rollupOptions'] = {
     input,
     output: {
-      entryFileNames({ facadeModuleId }) {
-        if (facadeModuleId?.includes('background-scripts')) {
-          return 'background.js'
-        }
+      entryFileNames({ name }) {
+        if (name === 'background') return 'background.js'
 
         return `assets/[name]-[hash].js`
-      },
+      }
     },
   }
 
@@ -40,6 +38,8 @@ const createRollupOptions = () => {
 }
 
 export default defineConfig({
+  base: './',
+
   plugins: [
     importmap(context),
     vue(),
