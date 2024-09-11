@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { isPlainObject } from 'lodash-es'
 import { getContent, getUserinfo, upsertUserSettings } from '@/api/github'
 import { STORAGE_KEY, USER_SETTINGS_FILENAME } from '@/constants'
-import { parseGithubUrl } from '@/utils'
+import { getStorage, parseGithubUrl, setStorage } from '@/utils'
 
 interface Settings {
   url?: string
@@ -49,9 +49,7 @@ export default defineStore('settings', () => {
         localSettings[key] = userSettings.value[key] as any
       })
 
-      await chrome.storage.local.set({
-        [STORAGE_KEY]: localSettings
-      })
+      await setStorage(STORAGE_KEY, localSettings)
 
       if (key === 'githubToken' || key === 'url') {
         await getRemoteSettings()
@@ -65,7 +63,7 @@ export default defineStore('settings', () => {
   }
 
   async function getSettings() {
-    const { [STORAGE_KEY]: localSettings } = await chrome.storage.local.get(STORAGE_KEY)
+    const localSettings: LocalSettings = await getStorage(STORAGE_KEY)
 
     userSettings.value = localSettings || {}
     if (!localSettings?.githubToken || !localSettings?.url) return
