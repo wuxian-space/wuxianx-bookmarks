@@ -2,12 +2,10 @@
 function toHome() {
   const home = chrome.runtime.getURL('index.html');
 
-  chrome.tabs.create({
-    url: home
-  });
+  window.open(home, '_blank');
 }
 </script>
 
 <template>
-  <button @click="toHome">To Home</button>
+  <t-button @click="toHome">To Home</t-button>
 </template>

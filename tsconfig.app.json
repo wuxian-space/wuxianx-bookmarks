@@ -29,10 +29,11 @@
     }
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.vue",
-    "./node_modules/chrome-types",
-    "./types"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "types",
+    "node_modules/chrome-types",
+    "node_modules/tdesign-vue-next/global.d.ts",
   ]
 }

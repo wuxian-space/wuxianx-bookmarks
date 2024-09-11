@@ -8,34 +8,12 @@ import vue from '@vitejs/plugin-vue'
 // @ts-ignore
 import importmap from 'vite-plugin-importmap'
 
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+
 const context = process.env.VITE_CONTEXT_TYPE
 const isNetEnv = context === 'net'
-
-const createRollupOptions = () => {
-  const input: Record<string, string> = {
-    main: './index.html',
-    popup: './popup.html',
-    background: './src/background-scripts/index.ts'
-  }
-
-  if (isNetEnv) {
-    delete input.background
-    delete input.popup
-  }
-
-  const result: BuildOptions['rollupOptions'] = {
-    input,
-    output: {
-      entryFileNames({ name }) {
-        if (name === 'background') return 'background.js'
-
-        return `assets/[name]-[hash].js`
-      }
-    },
-  }
-
-  return result
-}
 
 export default defineConfig({
   base: './',
@@ -43,7 +21,20 @@ export default defineConfig({
   plugins: [
     importmap(context),
     vue(),
-    copyChromeExtManifest()
+    copyChromeExtManifest(),
+    AutoImport({
+      resolvers: [TDesignResolver({
+        library: 'vue-next',
+      })],
+      dts: false
+    }),
+    Components({
+      resolvers: [TDesignResolver({
+        library: 'vue-next',
+        resolveIcons: true
+      })],
+      dts: false
+    }),
   ],
 
   resolve: {
@@ -109,4 +100,31 @@ function copyChromeExtManifest() {
       copy()
     }
   } as Plugin
+}
+
+
+function createRollupOptions() {
+  const input: Record<string, string> = {
+    main: './index.html',
+    popup: './popup.html',
+    background: './src/background-scripts/index.ts'
+  }
+
+  if (isNetEnv) {
+    delete input.background
+    delete input.popup
+  }
+
+  const result: BuildOptions['rollupOptions'] = {
+    input,
+    output: {
+      entryFileNames({ name }) {
+        if (name === 'background') return 'background.js'
+
+        return `assets/[name]-[hash].js`
+      }
+    },
+  }
+
+  return result
 }
