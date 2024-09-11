@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import UpdateGithubFile from '@/components/update-github-file.vue';
+import SettingIgnore from './setting-ignore.vue';
 import useSettings from '@/stores/useSettings';
 
 const visible = defineModel<boolean>('visible', { default: false });
@@ -11,14 +12,20 @@ const { updateSettings } = settingsStore;
 const { userSettings, githubError } = storeToRefs(settingsStore);
 
 const formRef = useTemplateRef('formRef');
+
+const ignoreVisible = ref(false);
 </script>
 
 <template>
-  <t-dialog v-model:visible="visible" header="同步设置" mode="modeless" width="700px" draggable>
+  <t-dialog v-model:visible="visible" header="同步设置" width="700px" attach="body">
     <template #body>
       <t-form ref="formRef">
         <t-form-item label="忽略">
-          <t-textarea v-model="userSettings.ignores" name="description" autosize readonly />
+          <t-button size="small" @click="ignoreVisible = true">
+            <template #icon><bookmark-add-icon /></template>
+            调整
+          </t-button>
+          <SettingIgnore v-model:visible="ignoreVisible" />
         </t-form-item>
 
         <t-divider align="left">同步到 GitHub</t-divider>
@@ -48,13 +55,12 @@ const formRef = useTemplateRef('formRef');
         </t-form-item>
 
         <t-form-item>
-          <UpdateGithubFile :content="[{ name: 'abc' }, { name: 'def' }]" :disabled="!!githubError" block />
+          <UpdateGithubFile :disabled="!!githubError" block />
         </t-form-item>
       </t-form>
     </template>
 
     <template #confirmBtn></template>
-
     <template #cancelBtn></template>
   </t-dialog>
 </template>

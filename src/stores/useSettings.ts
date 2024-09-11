@@ -1,14 +1,16 @@
 
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { isPlainObject } from 'lodash-es'
 import { getContent, getUserinfo, upsertUserSettings } from '@/api/github'
 import { STORAGE_KEY, USER_SETTINGS_FILENAME } from '@/constants'
 import { getStorage, parseGithubUrl, setStorage } from '@/utils'
 
+type Ignores = string[]
+
 interface Settings {
   url?: string
-  ignores?: string
+  ignores?: string[]
   autoSync?: boolean
   githubToken?: string
   githubAuthorName?: string
@@ -21,7 +23,9 @@ export type RemoteSettings = Omit<Settings, keyof LocalSettings>
 type SettingsKeys = keyof Settings
 
 export default defineStore('settings', () => {
-  const userSettings = ref<Settings>({})
+  const userSettings = ref<Settings>({
+    ignores: []
+  })
 
   const githubAuthorEmail = computed(() => userSettings.value.githubAuthorEmail)
   const githubAuthorName = computed(() => userSettings.value.githubAuthorName)
@@ -32,6 +36,14 @@ export default defineStore('settings', () => {
   const owner = computed(() => parsedRepoUrl.value?.owner)
 
   const githubError = ref('')
+
+  const ignores = ref<Ignores>([])
+  watch(ignores, (val) => {
+    userSettings.value.ignores = val || []
+    updateSettings('ignores')
+  }, {
+    deep: true,
+  })
 
 
   initFormData()
@@ -65,7 +77,11 @@ export default defineStore('settings', () => {
   async function getSettings() {
     const localSettings: LocalSettings = await getStorage(STORAGE_KEY)
 
-    userSettings.value = localSettings || {}
+    userSettings.value = {
+      ...userSettings.value,
+      ...localSettings || {}
+    }
+
     if (!localSettings?.githubToken || !localSettings?.url) return
 
     const remoteSettings = await getRemoteSettings()
@@ -73,6 +89,8 @@ export default defineStore('settings', () => {
       ...localSettings,
       ...remoteSettings,
     }
+
+    ignores.value = remoteSettings.ignores || []
   }
 
   async function getRemoteSettings() {
@@ -110,6 +128,7 @@ export default defineStore('settings', () => {
     githubToken,
     githubAuthorName,
     githubAuthorEmail,
+    ignores,
     repo,
     owner,
     githubError,

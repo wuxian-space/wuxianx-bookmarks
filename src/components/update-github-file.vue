@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue';
 import { upsertBookmarksData } from '@/api/github';
-
-const props = defineProps<{
-  content: any;
-}>();
+import useBookmarks from '@/stores/useBookmarks';
 
 const loading = ref(false);
+
+const bookmarksStore = useBookmarks();
 
 const push = async () => {
   loading.value = true;
   try {
-    await upsertBookmarksData(JSON.stringify(props.content));
+    await upsertBookmarksData(JSON.stringify(bookmarksStore.syncableBookmarks));
   } finally {
     loading.value = false;
   }

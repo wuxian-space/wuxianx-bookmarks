@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { getTree } from '@/api/bookmarks';
 import Settings from '@/components/settings/settings.vue';
+import useBookmarks from '@/stores/useBookmarks'
 
-const settingVisible = ref(false);
+const settingVisible = ref(true);
 
-const tree = ref([]);
+const bookmarksStore = useBookmarks()
 
-try {
-  // getTree().then((res: any) => {
-  //   console.log(`🚀 > getTree > res:`, res);
-  //   tree.value = res;
-  // });
-} catch (error) {
-  console.log(`🚀 > error:`, error);
-}
 </script>
 
 <template>
@@ -25,5 +17,5 @@ try {
   </t-button>
   <Settings v-model:visible="settingVisible" />
 
-  <pre>{{ tree }}</pre>
+  <pre>{{ bookmarksStore.bookmarks }}</pre>
 </template>
