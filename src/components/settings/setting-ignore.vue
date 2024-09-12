@@ -26,6 +26,7 @@ const bookmarksStore = useBookmarks();
       valueMode="parentFirst"
       line
       checkable
+      @change="settingsStore.updateSettings('ignores')"
     />
 
     <template #confirmBtn></template>

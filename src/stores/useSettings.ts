@@ -4,7 +4,8 @@ import { computed, ref, watch } from 'vue'
 import { isPlainObject } from 'lodash-es'
 import { getContent, getUserinfo, upsertUserSettings } from '@/api/github'
 import { STORAGE_KEY, USER_SETTINGS_FILENAME } from '@/constants'
-import { getStorage, parseGithubUrl, setStorage } from '@/utils'
+import { getStorage, setStorage } from '@/utils/storage'
+import { parseGithubUrl } from '@/utils/common'
 
 type Ignores = string[]
 
@@ -38,13 +39,6 @@ export default defineStore('settings', () => {
   const githubError = ref('')
 
   const ignores = ref<Ignores>([])
-  watch(ignores, (val) => {
-    userSettings.value.ignores = val || []
-    updateSettings('ignores')
-  }, {
-    deep: true,
-  })
-
 
   initFormData()
   function initFormData() {
@@ -52,6 +46,10 @@ export default defineStore('settings', () => {
   }
 
   async function updateSettings(key: SettingsKeys) {
+    if (key === 'ignores') {
+      userSettings.value.ignores = ignores.value || []
+    }
+
     const storageKeys: SettingsKeys[] = ['githubToken', 'url']
 
     if (storageKeys.includes(key)) {
