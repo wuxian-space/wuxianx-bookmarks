@@ -1,5 +1,4 @@
-import { parseJSON } from '@/utils';
-import { getEnvSpecific } from '.'
+import { parseJSON, getEnvSpecific } from './common';
 
 export const getStorage = getEnvSpecific<(key: string) => Promise<any>>({
   async chrome(key: string) {

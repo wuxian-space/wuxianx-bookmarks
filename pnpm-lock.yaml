@@ -11,9 +11,12 @@ importers:
       '@octokit/rest':
         specifier: ^21.0.2
         version: 21.0.2
-      '@types/path-browserify':
-        specifier: ^1.0.3
-        version: 1.0.3
+      '@vueuse/core':
+        specifier: ^11.0.3
+        version: 11.0.3(vue@3.5.3(typescript@5.5.4))
+      bem-ts:
+        specifier: ^0.14.0
+        version: 0.14.0
       js-base64:
         specifier: ^3.7.7
         version: 3.7.7
@@ -42,6 +45,9 @@ importers:
       '@types/node':
         specifier: ^22.5.4
         version: 22.5.4
+      '@types/path-browserify':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@vitejs/plugin-vue':
         specifier: ^5.1.2
         version: 5.1.3(vite@5.4.3(@types/node@22.5.4)(sass-embedded@1.78.0))(vue@3.5.3(typescript@5.5.4))
@@ -62,7 +68,7 @@ importers:
         version: 5.5.4
       unplugin-auto-import:
         specifier: ^0.18.2
-        version: 0.18.2(rollup@4.21.2)
+        version: 0.18.2(@vueuse/core@11.0.3(vue@3.5.3(typescript@5.5.4)))(rollup@4.21.2)
       unplugin-vue-components:
         specifier: ^0.27.4
         version: 0.27.4(@babel/parser@7.25.6)(rollup@4.21.2)(vue@3.5.3(typescript@5.5.4))
@@ -435,6 +441,9 @@ packages:
   '@types/validator@13.12.1':
     resolution: {integrity: sha512-w0URwf7BQb0rD/EuiG12KP0bailHKHP5YVviJG9zw3ykAokL0TuxU2TUqMB7EwZ59bDHYdeTIvjI5m0S7qHfOA==}
 
+  '@types/web-bluetooth@0.0.20':
+    resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
+
   '@vitejs/plugin-vue@5.1.3':
     resolution: {integrity: sha512-3xbWsKEKXYlmX82aOHufFQVnkbMC/v8fLpWwh6hWOUrK5fbbtBh9Q/WWse27BFgSy2/e2c0fz5Scgya9h2GLhw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -503,6 +512,15 @@ packages:
   '@vue/shared@3.5.3':
     resolution: {integrity: sha512-Jp2v8nylKBT+PlOUjun2Wp/f++TfJVFjshLzNtJDdmFJabJa7noGMncqXRM1vXGX+Yo2V7WykQFNxusSim8SCA==}
 
+  '@vueuse/core@11.0.3':
+    resolution: {integrity: sha512-RENlh64+SYA9XMExmmH1a3TPqeIuJBNNB/63GT35MZI+zpru3oMRUA6cEFr9HmGqEgUisurwGwnIieF6qu3aXw==}
+
+  '@vueuse/metadata@11.0.3':
+    resolution: {integrity: sha512-+FtbO4SD5WpsOcQTcC0hAhNlOid6QNLzqedtquTtQ+CRNBoAt9GuV07c6KNHK1wCmlq8DFPwgiLF2rXwgSHX5Q==}
+
+  '@vueuse/shared@11.0.3':
+    resolution: {integrity: sha512-0rY2m6HS5t27n/Vp5cTDsKTlNnimCqsbh/fmT2LgE+aaU42EMfXo8+bNX91W9I7DDmxfuACXMmrd7d79JxkqWA==}
+
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
@@ -533,6 +551,10 @@ packages:
 
   before-after-hook@3.0.2:
     resolution: {integrity: sha512-Nik3Sc0ncrMK4UUdXQmAnRtzmNQTAAXmXIopizwZ1W1t8QmfJj+zL4OA2I7XPTPW5z5TDqv4hRo/JzouDJnX3A==}
+
+  bem-ts@0.14.0:
+    resolution: {integrity: sha512-jIHqh4JXkVLOIxu6GjPx5gbCRFj+yca4rTGJ82m5ykkJ+uWLwO+f18xchTwr8ntaL+4yEwiyjLW009esD2dr2w==}
+    engines: {node: '>=16.0.0'}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -1714,6 +1736,8 @@ snapshots:
 
   '@types/validator@13.12.1': {}
 
+  '@types/web-bluetooth@0.0.20': {}
+
   '@vitejs/plugin-vue@5.1.3(vite@5.4.3(@types/node@22.5.4)(sass-embedded@1.78.0))(vue@3.5.3(typescript@5.5.4))':
     dependencies:
       vite: 5.4.3(@types/node@22.5.4)(sass-embedded@1.78.0)
@@ -1820,6 +1844,25 @@ snapshots:
 
   '@vue/shared@3.5.3': {}
 
+  '@vueuse/core@11.0.3(vue@3.5.3(typescript@5.5.4))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 11.0.3
+      '@vueuse/shared': 11.0.3(vue@3.5.3(typescript@5.5.4))
+      vue-demi: 0.14.10(vue@3.5.3(typescript@5.5.4))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
+  '@vueuse/metadata@11.0.3': {}
+
+  '@vueuse/shared@11.0.3(vue@3.5.3(typescript@5.5.4))':
+    dependencies:
+      vue-demi: 0.14.10(vue@3.5.3(typescript@5.5.4))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
   acorn@8.12.1: {}
 
   ansi-styles@3.2.1:
@@ -1854,6 +1897,8 @@ snapshots:
   balanced-match@1.0.2: {}
 
   before-after-hook@3.0.2: {}
+
+  bem-ts@0.14.0: {}
 
   binary-extensions@2.3.0: {}
 
@@ -2765,7 +2810,7 @@ snapshots:
 
   universal-user-agent@7.0.2: {}
 
-  unplugin-auto-import@0.18.2(rollup@4.21.2):
+  unplugin-auto-import@0.18.2(@vueuse/core@11.0.3(vue@3.5.3(typescript@5.5.4)))(rollup@4.21.2):
     dependencies:
       '@antfu/utils': 0.7.10
       '@rollup/pluginutils': 5.1.0(rollup@4.21.2)
@@ -2775,6 +2820,8 @@ snapshots:
       minimatch: 9.0.5
       unimport: 3.11.1(rollup@4.21.2)
       unplugin: 1.14.0
+    optionalDependencies:
+      '@vueuse/core': 11.0.3(vue@3.5.3(typescript@5.5.4))
     transitivePeerDependencies:
       - rollup
       - webpack-sources

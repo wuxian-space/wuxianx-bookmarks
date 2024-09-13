@@ -11,6 +11,7 @@ import importmap from 'vite-plugin-importmap'
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+import { NAMESPACE } from './src/constants'
 
 const context = process.env.VITE_CONTEXT_TYPE
 const isNetEnv = context === 'net'
@@ -36,6 +37,17 @@ export default defineConfig({
       dts: false
     }),
   ],
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+        $namespace:${NAMESPACE};
+        @import "@/styles/index.scss";
+        `
+      }
+    }
+  },
 
   resolve: {
     alias: {

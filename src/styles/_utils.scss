@@ -1,0 +1,13 @@
+$ns: $namespace;
+
+@function b($name) {
+  @return '#{$ns}-#{$name}';
+}
+
+@function var-name($name) {
+  @return '--#{$ns}-#{$name}';
+}
+
+@function var-value($name) {
+  @return var(#{var-name($name)});
+}
