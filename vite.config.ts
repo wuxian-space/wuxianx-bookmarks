@@ -4,6 +4,7 @@ import path from 'node:path'
 import { defineConfig } from 'vite'
 import type { Plugin, ResolvedConfig, BuildOptions } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 // @ts-ignore
 import importmap from 'vite-plugin-importmap'
@@ -36,6 +37,7 @@ export default defineConfig({
       })],
       dts: false
     }),
+    vueDevTools()
   ],
 
   css: {
