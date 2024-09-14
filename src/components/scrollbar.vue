@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { bem } from '@/utils/class-name';
-const { height = '100%' } = defineProps<{
-  height?: string;
-}>();
-
 const b = bem('scrollbar')
 </script>
 
@@ -15,7 +11,6 @@ const b = bem('scrollbar')
 
 <style lang="scss">
 .#{b(scrollbar)} {
-  height: v-bind(height);
   @include scrollbar;
 }
 </style>

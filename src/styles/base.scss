@@ -1,0 +1,15 @@
+:root {
+  --td-component-border: #{var-value(border-color)}
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var-value(bg-color);
+  color: var-value(text-color);
+  font-family: var-value(font-family);
+  font-size: var-value(font-size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

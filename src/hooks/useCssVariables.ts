@@ -1,32 +1,39 @@
 import { useCssVar } from '@vueuse/core';
-import { useTemplateRef, watch } from 'vue';
+import { watch } from 'vue';
 import { kebabCase } from 'lodash-es'
 import useThemeConfig, { ThemeConfig } from '@/stores/useThemeConfig'
 import { NAMESPACE } from '@/constants'
+
+const root = document.documentElement
 
 export function setLayoutCssVars() {
   const themeConfigStore = useThemeConfig();
 
   return {
     setLayout() {
-      const layoutEl = useTemplateRef<HTMLElement>('default-theme-layout');
+      sv('bgColor', root)
+      sv('textColor', root);
+      sv('fontFamily', root);
+      sv('fontSize', root);
+      sv('borderColor', root);
 
-      createWatcher('asideWidth', layoutEl, (val) => `${val}px`)
+      sv('asideWidth', root, (val) => `${val}px`)
+      sv('asideBgColor', root);
+      sv('asideTextColor', root);
+      sv('asideItemColor', root)
+      sv('asideItemMinHeight', root, (val) => `${val}px`)
+      sv('asideActiveItemColor', root);
 
-      return layoutEl
+      sv('headerHeight', root, (val) => `${val}px`)
+      sv('headerBgColor', root);
+      sv('headerTextColor', root);
+      sv('headerTitleFontSize', root, (val) => `${val}px`)
+
+      return root
     },
-
-    setAside() {
-      const asideEl = useTemplateRef<HTMLElement>('default-theme-aside');
-
-      createWatcher('asideBgColor', asideEl);
-      createWatcher('asideTextColor', asideEl);
-
-      return asideEl
-    }
   }
 
-  function createWatcher(key: keyof ThemeConfig, el: any, handler?: (val: any) => string) {
+  function sv(key: keyof ThemeConfig, el: any, handler?: (val: any) => string) {
     const varKey = `--${NAMESPACE}-${kebabCase(key)}`
 
     const result = useCssVar(varKey, el);
