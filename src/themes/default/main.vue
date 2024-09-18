@@ -32,7 +32,7 @@ const bookmarksStore = useBookmarks();
 
 <style lang="scss">
 .#{b(theme-layout-main)} {
-  padding: 0 20px 20px;
+  padding: 0 20px;
 
   &__group {
     &-name {
