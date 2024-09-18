@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useAttrs } from 'vue';
 import { storeToRefs } from 'pinia';
 import Settings from '@/components/settings/settings.vue';
 import useThemeConfig from '@/stores/useThemeConfig';
 import { bem } from '@/utils/class-name';
+
+const attrs = useAttrs();
 
 const b = bem('theme-layout-header');
 const themeConfigStore = useThemeConfig();
@@ -13,7 +15,7 @@ const settingVisible = ref(false);
 </script>
 
 <template>
-  <div :class="b()">
+  <div v-bind="attrs" :class="b()">
     <img :class="b('logo')" :src="logo" alt="logo" />
     <h1 :class="b('title')">{{ title }}</h1>
 
