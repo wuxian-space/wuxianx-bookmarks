@@ -13,7 +13,7 @@ const bookmarksStore = useBookmarks();
 <template>
   <Scrollbar :class="b()">
     <section v-for="(menus, index) in bookmarksStore.bookmarks" :class="b('group')">
-      <div v-for="menu in menus.children" :id="menu.id" :class="b('links')">
+      <div v-for="menu in menus.children?.filter(menu => !menu.url)" :id="menu.id" :class="b('links')">
         <div v-if="index > 0" :class="b('group-name')">{{ menus.title }}</div>
 
         <t-card :title="menu.title" header-bordered>

@@ -2,22 +2,35 @@
 import useBookmarks from '@/stores/useBookmarks';
 import Scrollbar from '@/components/scrollbar.vue';
 import { bem } from '@/utils/class-name';
+import type { AnchorProps } from 'tdesign-vue-next';
 
 const b = bem('theme-layout-aside');
 
 const bookmarksStore = useBookmarks();
+
+const onAnchorItemClick: AnchorProps['onClick'] = ({ e }) => {
+  e.preventDefault();
+};
 </script>
 
 <template>
   <Scrollbar ref="default-theme-aside" :class="b()">
-    <t-anchor :class="b('anchor')" :bounds="50" container=".b-theme-layout__main">
+    <TAnchor :class="b('anchor')" :bounds="50" container=".b-theme-layout__main" @click="onAnchorItemClick">
       <div v-for="menus in bookmarksStore.bookmarks" :class="b('group')">
         <div :class="b('group-name')">{{ menus.title }}</div>
         <nav :class="b('group-nav')" container=".b-theme-layout__main">
-          <t-anchor-item v-for="menu in menus.children" :href="`#${menu.id}`" :title="menu.title" />
+          <template v-for="menu in menus.children">
+            <div class="t-anchor__item" v-if="menu.url">
+              <a :href="menu.url" :title="menu.title" class="t-anchor__item-link" target="_blank">
+                {{ menu.title }}
+                <ArrowRightUpIcon />
+              </a>
+            </div>
+            <t-anchor-item v-else :href="`#${menu.id}`" :title="menu.title" />
+          </template>
         </nav>
       </div>
-    </t-anchor>
+    </TAnchor>
   </Scrollbar>
 </template>
 
@@ -51,6 +64,13 @@ const bookmarksStore = useBookmarks();
 
     .t-anchor__item-link {
       color: var-value(aside-item-color);
+
+      .t-icon {
+        margin-left: 3px;
+        width: auto;
+        height: 1.3em;
+        color: var(--b-aside-active-item-color);
+      }
     }
 
     .t-is-active > a {
