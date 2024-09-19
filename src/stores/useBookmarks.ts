@@ -45,10 +45,12 @@ export default defineStore('bookmarks', () => {
   async function getBookmarks() {
     bookmarks.value = (await getTree()).map((item) => deep(item))
 
-    function deep(bm: BookmarkNode, parent?: BookmarkNode) {
+    function deep(node: BookmarkNode, parent?: BookmarkNode) {
+      const { children, ...bm } = node
+
       const result: BookmarkNode = {
         ...bm,
-        pinyin: pinyin(bm.title, { toneType: 'none', nonZh: 'consecutive', separator: '' }).toLocaleLowerCase(),
+        pinyin: pinyin(node.title, { toneType: 'none', nonZh: 'consecutive', separator: '' }).toLocaleLowerCase(),
       }
 
       if (parent) {
@@ -56,8 +58,8 @@ export default defineStore('bookmarks', () => {
         result.parentsPath.push(...parent?.parentsPath || [], parent)
       }
 
-      if (Array.isArray(bm.children)) {
-        bm.children = bm.children.map((child => {
+      if (Array.isArray(children)) {
+        result.children = children.map((child => {
           return deep(child, result)
         }))
       }
