@@ -1,7 +1,7 @@
 import { useCssVar } from '@vueuse/core';
 import { watch } from 'vue';
 import { kebabCase } from 'lodash-es'
-import useThemeConfig, { type ThemeConfig, baseCssVariables, asideCssVariables, headerCssVariables, linkCssVariables } from '@/stores/useThemeConfig'
+import useThemeConfig, { type ThemeConfig, baseCssVariables, asideCssVariables, headerCssVariables, searchCssVariables, linkCssVariables } from '@/stores/useThemeConfig'
 import { NAMESPACE } from '@/constants'
 
 const root = document.documentElement
@@ -14,6 +14,7 @@ export function setLayoutCssVars() {
       svGroup(baseCssVariables)
       svGroup(linkCssVariables)
       svGroup(headerCssVariables)
+      svGroup(searchCssVariables)
       svGroup(asideCssVariables)
       return root
     },

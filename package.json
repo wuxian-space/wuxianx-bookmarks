@@ -18,6 +18,7 @@
     "lodash-es": "^4.17.21",
     "path-browserify": "^1.0.1",
     "pinia": "^2.2.2",
+    "pinyin-pro": "^3.24.2",
     "tdesign-icons-vue-next": "^0.2.6",
     "tdesign-vue-next": "^1.10.0",
     "vue": "^3.5.3"

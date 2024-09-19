@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, useAttrs } from 'vue';
+import { useAttrs } from 'vue';
 import { storeToRefs } from 'pinia';
 import Settings from '@/components/settings/sync-settings.vue';
 import useThemeConfig from '@/stores/useThemeConfig';
 import { bem } from '@/utils/class-name';
+import Search from './search/search.vue';
 
 const attrs = useAttrs();
 
@@ -17,11 +18,13 @@ const { logo, title } = storeToRefs(themeConfigStore);
     <img :class="b('logo')" :src="logo" alt="logo" />
     <h1 :class="b('title')">{{ title }}</h1>
 
+    <Search />
+
     <Settings />
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .#{b(theme-layout-header)} {
   @include flex-center(y);
   padding: 0 20px;

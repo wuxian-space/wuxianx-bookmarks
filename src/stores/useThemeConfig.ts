@@ -25,6 +25,29 @@ interface HeaderCssVariables {
   headerTitleFontSize: number
 }
 
+interface SearchCssVariables {
+  searchButtonBgColor: string
+  searchButtonColor: string
+  searchButtonHeight: number
+  searchButtonFontSize: number
+  searchButtonBorderRadius: number
+  searchButtonBorderColor: string
+
+  searchButtonHoverBgColor: string
+  searchButtonHoverColor: string
+  searchButtonHoverBorderColor: string
+
+  searchResultItemBgColor: string
+  searchResultItemHoverBgColor: string
+  searchResultItemColor: string
+  searchResultItemHoverColor: string
+
+  searchResultItemBorderColor: string
+  searchResultItemHoverBorderColor: string
+
+  searchResultItemBorderRadius: number
+}
+
 interface SiteConfig {
   title: string
   logo: string
@@ -50,7 +73,7 @@ interface LinkCssVariables {
   linkHoverBorderColor: string | [string, string]
 }
 
-export type ThemeConfig = BaseCssVariables & AsideCssVariables & HeaderCssVariables & LinkCssVariables & SiteConfig
+export type ThemeConfig = BaseCssVariables & AsideCssVariables & HeaderCssVariables & SearchCssVariables & LinkCssVariables & SiteConfig
 
 export const baseCssVariables: BaseCssVariables = {
   bgColor: '#f2f2f2',
@@ -59,6 +82,7 @@ export const baseCssVariables: BaseCssVariables = {
   fontSize: 14,
   borderColor: '#eee',
 }
+
 export const asideCssVariables: AsideCssVariables = {
   asideWidth: 240,
   asideBgColor: '#ffff',
@@ -67,12 +91,40 @@ export const asideCssVariables: AsideCssVariables = {
   asideActiveItemColor: '#0052d9',
   asideItemMinHeight: 36,
 }
+
 export const headerCssVariables: HeaderCssVariables = {
   headerHeight: 48,
   headerBgColor: '#fff',
   headerTextColor: '#333',
   headerTitleFontSize: 18,
 }
+
+export const searchCssVariables: SearchCssVariables = {
+  searchButtonBgColor: '#f6f6f7',
+  searchButtonHoverBgColor: '#f6f6f7',
+
+  searchButtonColor: 'rgba(60, 60, 67, .78)',
+  searchButtonHoverColor: 'rgba(60, 60, 67, .78)',
+
+  searchButtonHeight: 30,
+  searchButtonFontSize: 14,
+  searchButtonBorderRadius: 5,
+
+  searchButtonBorderColor: 'transparent',
+  searchButtonHoverBorderColor: '#0052d9',
+
+  searchResultItemBgColor: '#fff',
+  searchResultItemHoverBgColor: '#fff',
+
+  searchResultItemColor: '#333',
+  searchResultItemHoverColor: '#333',
+
+  searchResultItemBorderColor: '#f2f2f2',
+  searchResultItemHoverBorderColor: '#0052d9',
+
+  searchResultItemBorderRadius: 5,
+}
+
 export const linkCssVariables: LinkCssVariables = {
   linkColor: '#555',
   linkIconColor: '#0052d9',
@@ -100,6 +152,7 @@ export default defineStore('theme-config', () => {
     ...baseCssVariables,
     ...asideCssVariables,
     ...headerCssVariables,
+    ...searchCssVariables,
     ...linkCssVariables,
 
     title: '无限书签',
