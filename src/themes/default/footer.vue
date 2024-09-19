@@ -6,7 +6,7 @@ const b = bem('theme-layout-footer');
 
 <template>
   <div :class="b()">
-    <div :class="b('copyright')">© {{ new Date().getFullYear() }} 使用 <a href="https://github.com/yuexiaoliang/browser-bookmarks-page" target="_blank" ref="noopener noreferrer nofollow">无限书签</a> 构建</div>
+    <div :class="b('copyright')">© {{ new Date().getFullYear() }} 使用 <a href="https://github.com/wuxian-space/wuxianx-bookmarks" target="_blank" ref="noopener noreferrer nofollow">无限书签</a> 构建</div>
   </div>
 </template>
 

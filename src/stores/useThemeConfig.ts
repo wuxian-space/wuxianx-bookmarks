@@ -38,7 +38,7 @@ interface LinkCssVariables {
   linkBgColor: string | [string, string]
   linkHoverBgColor: string | [string, string]
   linkMinWidth: number
-  linkMaxWidth: number
+  linkMaxWidth: number | string
   linkHeight: number
   linkRadius: number
   linkBorderColor: string
@@ -77,11 +77,11 @@ export const linkCssVariables: LinkCssVariables = {
   linkColor: '#555',
   linkIconColor: '#0052d9',
   linkBgColor: '#fff',
-  linkMinWidth: 80,
-  linkMaxWidth: 240,
+  linkMinWidth: 0,
+  linkMaxWidth: '100%',
   linkHeight: 32,
   linkRadius: 4,
-  linkBorderColor: '#eee',
+  linkBorderColor: '#ccc',
   linkBorderStyle: 'solid',
   linkBorderWidth: 1,
   linkAlign: 'left',
