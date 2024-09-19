@@ -28,13 +28,15 @@ export default defineStore('bookmarks', () => {
   }
 
   function calcTree(children: BookmarkNode[]) {
-    return children.filter(node => !ignores.value.includes(node.id)).map((node) => {
+    return children.filter(node => !ignores.value.includes(node.id)).map((_node) => {
+      const { id, parentId, title, url, children } = _node
+
       const result = {
-        ...node
+        id, parentId, title, url, children
       };
 
-      if (Array.isArray(node.children)) {
-        result.children = calcTree(node.children);
+      if (Array.isArray(children)) {
+        result.children = calcTree(children);
       }
 
       return result;
