@@ -19,7 +19,7 @@ const attrs = useAttrs();
 </script>
 
 <template>
-  <t-dialog v-model:visible="visible" header="同步设置" width="700px" attach="body">
+  <t-dialog v-model:visible="visible" :footer="false" header="同步设置" width="700px" attach="body">
     <template #body>
       <t-form ref="formRef">
         <t-form-item label="忽略">
@@ -61,9 +61,6 @@ const attrs = useAttrs();
         </t-form-item>
       </t-form>
     </template>
-
-    <template #confirmBtn></template>
-    <template #cancelBtn></template>
   </t-dialog>
   <slot>
     <t-button v-bind="attrs" style="margin-left: auto" shape="circle" size="medium" theme="primary" variant="text" @click="visible = true">
