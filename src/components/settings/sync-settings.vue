@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
+import { ref, useTemplateRef, useAttrs } from 'vue';
 import { storeToRefs } from 'pinia';
-import UpdateGithubFile from '@/components/update-github-file.vue';
-import SettingIgnore from './setting-ignore.vue';
+import SyncBookmarksData from '@/components/settings/sync-bookmarks-data.vue';
+import SettingIgnore from './sync-setting-ignore.vue';
 import useSettings from '@/stores/useSettings';
 
 const visible = defineModel<boolean>('visible', { default: false });
@@ -14,6 +14,8 @@ const { userSettings, githubError } = storeToRefs(settingsStore);
 const formRef = useTemplateRef('formRef');
 
 const ignoreVisible = ref(false);
+
+const attrs = useAttrs();
 </script>
 
 <template>
@@ -50,12 +52,12 @@ const ignoreVisible = ref(false);
           <t-input v-model="userSettings.githubAuthorEmail" @blur="updateSettings('githubAuthorEmail')" />
         </t-form-item>
 
-        <t-form-item label="自动">
+        <!-- <t-form-item label="自动">
           <t-switch v-model="userSettings.autoSync" @change="updateSettings('autoSync')" />
-        </t-form-item>
+        </t-form-item> -->
 
         <t-form-item>
-          <UpdateGithubFile :disabled="!!githubError" block />
+          <SyncBookmarksData :disabled="!!githubError" block />
         </t-form-item>
       </t-form>
     </template>
@@ -63,4 +65,9 @@ const ignoreVisible = ref(false);
     <template #confirmBtn></template>
     <template #cancelBtn></template>
   </t-dialog>
+  <slot>
+    <t-button v-bind="attrs" style="margin-left: auto" shape="circle" size="medium" theme="primary" variant="text" @click="visible = true">
+      <template #icon><cloud-upload-icon /></template>
+    </t-button>
+  </slot>
 </template>

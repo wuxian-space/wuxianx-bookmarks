@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue';
 import { storeToRefs } from 'pinia';
-import Settings from '@/components/settings/settings.vue';
+import Settings from '@/components/settings/sync-settings.vue';
 import useThemeConfig from '@/stores/useThemeConfig';
 import { bem } from '@/utils/class-name';
 
@@ -10,8 +10,6 @@ const attrs = useAttrs();
 const b = bem('theme-layout-header');
 const themeConfigStore = useThemeConfig();
 const { logo, title } = storeToRefs(themeConfigStore);
-
-const settingVisible = ref(false);
 </script>
 
 <template>
@@ -19,12 +17,8 @@ const settingVisible = ref(false);
     <img :class="b('logo')" :src="logo" alt="logo" />
     <h1 :class="b('title')">{{ title }}</h1>
 
-    <t-button style="margin-left: auto" shape="circle" size="medium" theme="primary" variant="text" @click="settingVisible = true">
-      <template #icon><setting-icon /></template>
-    </t-button>
+    <Settings />
   </div>
-
-  <Settings v-model:visible="settingVisible" />
 </template>
 
 <style lang="scss" scoped>
