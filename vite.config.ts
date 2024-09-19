@@ -4,6 +4,7 @@ import path from 'node:path'
 import { defineConfig } from 'vite'
 import type { Plugin, ResolvedConfig, BuildOptions } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import jsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // @ts-ignore
@@ -23,6 +24,7 @@ export default defineConfig({
   plugins: [
     importmap(context),
     vue(),
+    jsx(),
     copyChromeExtManifest(),
     AutoImport({
       resolvers: [TDesignResolver({
