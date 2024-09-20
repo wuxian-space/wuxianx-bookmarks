@@ -4,6 +4,9 @@ import { storeToRefs } from 'pinia';
 import SyncBookmarksData from '@/components/settings/sync-bookmarks-data.vue';
 import SettingIgnore from './sync-setting-ignore.vue';
 import useSettings from '@/stores/useSettings';
+import { bem } from '@/utils/class-name';
+
+const b = bem('sync-settings');
 
 const visible = defineModel<boolean>('visible', { default: false });
 
@@ -52,9 +55,15 @@ const attrs = useAttrs();
           <t-input v-model="userSettings.githubAuthorEmail" @blur="updateSettings('githubAuthorEmail')" />
         </t-form-item>
 
-        <!-- <t-form-item label="自动">
+        <t-form-item label="自动">
           <t-switch v-model="userSettings.autoSync" @change="updateSettings('autoSync')" />
-        </t-form-item> -->
+          <span :class="b('auto-sync-hint')">
+            创建、删除、移动、修改都会触发自动同步
+            <t-tooltip content="导入书签后需要手动同步">
+              <InfoCircleIcon />
+            </t-tooltip>
+          </span>
+        </t-form-item>
 
         <t-form-item>
           <SyncBookmarksData :disabled="!!githubError" block />
@@ -68,3 +77,20 @@ const attrs = useAttrs();
     </t-button>
   </slot>
 </template>
+
+<style lang="scss">
+.#{b(sync-settings)} {
+  &__auto-sync-hint {
+    @include flex-center(y);
+    margin-left: 10px;
+    font-size: 12px;
+    color: var(--td-text-color-placeholder);
+
+    .t-icon {
+      margin-left: 5px;
+      font-size: 1.2em;
+      color: var(--td-warning-color);
+    }
+  }
+}
+</style>

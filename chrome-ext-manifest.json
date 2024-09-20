@@ -1,19 +1,20 @@
 {
-  "name": "Browser Bookmarks Page",
+  "name": "无限书签",
   "version": "0.0.0.1",
   "manifest_version": 3,
   "description": "Manage your browser bookmarks more comfortably, and at the same time, turn them into your personal customized navigation site.",
   "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/icon.png",
+    "32": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
   },
   "action": {
-    "default_popup": "popup.html"
+    // "default_popup": "popup.html"
   },
   "permissions": ["activeTab", "bookmarks", "storage"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   }
 }

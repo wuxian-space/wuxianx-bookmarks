@@ -5,5 +5,10 @@ declare namespace chrome {
       pinyin?: string
       parentsPath?: BookmarkTreeNode[]
     }
+
+  }
+
+  export namespace events {
+    export type GetEventType<T> = T extends chrome.events.Event<infer R> ? R : never;
   }
 }

@@ -3,37 +3,39 @@ import { encode, decode } from 'js-base64';
 import _path from 'path-browserify'
 import { isPlainObject } from 'lodash-es'
 
-import useSettings, { RemoteSettings } from '@/stores/useSettings'
+import { _getSettings, getLocalSettings, RemoteSettings } from '@/stores/useSettings'
 import { BOOKMARKS_DATA_FILENAME, USER_SETTINGS_FILENAME } from '@/constants';
-import { parseJSON } from '@/utils';
+import { parseGithubUrl, parseJSON } from '@/utils';
 
-function createOctokit() {
-  const settingsStore = useSettings()
+async function createOctokit() {
+  const settings = await getLocalSettings()
+  const parsedRepoUrl = parseGithubUrl(settings.url!)
 
   const octokit = new Octokit({
-    auth: settingsStore.githubToken
+    auth: settings.githubToken
   });
 
+
   octokit.hook.before('request', (options) => {
-    if (!settingsStore.userSettings.url) {
+    if (!settings.url) {
       throw new Error('No url')
     }
 
-    if (!settingsStore.githubToken) {
+    if (!settings.githubToken) {
       throw new Error('Not authenticated')
     }
 
-    options.owner = settingsStore.owner
-    options.repo = settingsStore.repo
+    options.owner = parsedRepoUrl.owner
+    options.repo = parsedRepoUrl.repo
   })
 
-  octokit.hook.after('request', () => {
-    settingsStore.githubError = ''
-  })
+  // octokit.hook.after('request', () => {
+  //   settings.githubError = ''
+  // })
 
-  octokit.hook.error('request', (error) => {
-    settingsStore.githubError = error.message
-  })
+  // octokit.hook.error('request', (error) => {
+  //   settings.githubError = error.message
+  // })
 
   return octokit
 }
@@ -67,8 +69,7 @@ export async function getContent(path: string) {
 
 export async function upsertContents(path: string, content: string) {
   const octokit = await createOctokit()
-
-  const settingsStore = useSettings()
+  const settings = await _getSettings()
 
   const data: RestEndpointMethodTypes["repos"]["createOrUpdateFileContents"]["parameters"] = {
     path,
@@ -77,8 +78,8 @@ export async function upsertContents(path: string, content: string) {
     message: `updated ${path}`,
     content: encode(content),
     author: {
-      name: settingsStore.githubAuthorName!,
-      email: settingsStore.githubAuthorEmail!
+      name: settings.githubAuthorName!,
+      email: settings.githubAuthorEmail!
     },
   }
 

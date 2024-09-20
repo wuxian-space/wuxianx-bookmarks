@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getTree } from '@/api/bookmarks';
 import { storeToRefs } from 'pinia';
-import useSettings from '@/stores/useSettings';
+import useSettings, { Settings } from '@/stores/useSettings';
 import { pinyin } from 'pinyin-pro'
 
 export type BookmarkNode = chrome.bookmarks.BookmarkTreeNode
@@ -38,7 +38,7 @@ export default defineStore('bookmarks', () => {
   })
 
   const syncableBookmarks = computed(() => {
-    return calcTree(bookmarks.value)
+    return toSyncBookmarks(bookmarks.value, ignores.value)
   })
 
   getBookmarks()
@@ -76,19 +76,20 @@ export default defineStore('bookmarks', () => {
     getBookmarks,
   }
 
-  function calcTree(children: BookmarkNode[]) {
-    return children.filter(node => !ignores.value.includes(node.id)).map((_node) => {
-      const { id, parentId, title, url, children } = _node
-
-      const result = {
-        id, parentId, title, url, children
-      };
-
-      if (Array.isArray(children)) {
-        result.children = calcTree(children);
-      }
-
-      return result;
-    });
-  }
 })
+
+export function toSyncBookmarks(bookmarks: BookmarkNode[], ignores: Settings['ignores']) {
+  return bookmarks.filter(node => !ignores?.includes(node.id)).map((_node) => {
+    const { id, parentId, title, url, children } = _node
+
+    const result = {
+      id, parentId, title, url, children
+    };
+
+    if (Array.isArray(children)) {
+      result.children = toSyncBookmarks(children, ignores);
+    }
+
+    return result;
+  });
+}
