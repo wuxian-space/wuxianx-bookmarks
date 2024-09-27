@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { spawn } from 'cross-spawn'
 
 import { defineConfig } from 'vite'
 import type { Plugin, ResolvedConfig, BuildOptions } from 'vite'
@@ -7,25 +8,19 @@ import vue from '@vitejs/plugin-vue'
 import jsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// @ts-ignore
-import importmap from 'vite-plugin-importmap'
-
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 import { NAMESPACE } from './src/constants'
 
-const context = process.env.VITE_CONTEXT_TYPE
-const isNetEnv = context === 'net'
-
 export default defineConfig({
   base: './',
 
   plugins: [
-    importmap(context),
     vue(),
     jsx(),
     copyChromeExtManifest(),
+    buildThemes(),
     AutoImport({
       resolvers: [TDesignResolver({
         library: 'vue-next',
@@ -71,13 +66,50 @@ export default defineConfig({
   }
 })
 
+function buildThemes() {
+  let config: ResolvedConfig
+  function copy() {
+    const { root, build } = config
+    const themesDist = path.join(root, 'themes', 'dist')
+
+    if (!fs.existsSync(themesDist)) {
+      throw new Error('themes dist not found')
+    }
+
+    const outDir = path.join(root, build.outDir)
+
+    fs.cpSync(themesDist, path.join(outDir, 'themes'), {
+      recursive: true
+    })
+  }
+
+  return {
+    name: 'build-themes',
+
+    configResolved(resolvedConfig) {
+      config = resolvedConfig
+    },
+
+    writeBundle() {
+      if (config.build.watch) return;
+      const build = spawn('pnpm', ['build'], { cwd: path.join(config.root, 'themes'), stdio: 'inherit' })
+
+      build.on('close', (code) => {
+        if (code !== 0) return;
+
+        copy()
+      })
+
+    }
+  } as Plugin
+
+}
+
 function copyChromeExtManifest() {
   let config: ResolvedConfig
   const manifestName = 'chrome-ext-manifest.json'
 
   function copy() {
-    if (isNetEnv) return;
-
     const { root, build } = config
 
     const outDir = path.join(root, build.outDir)
@@ -99,8 +131,6 @@ function copyChromeExtManifest() {
     },
 
     configureServer(server) {
-      if (isNetEnv) return;
-
       const { watcher } = server
 
       watcher.add(path.join(config.root, manifestName))
@@ -124,11 +154,6 @@ function createRollupOptions() {
     main: './index.html',
     popup: './popup.html',
     background: './src/background-scripts/index.ts'
-  }
-
-  if (isNetEnv) {
-    delete input.background
-    delete input.popup
   }
 
   const result: BuildOptions['rollupOptions'] = {

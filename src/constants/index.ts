@@ -10,5 +10,6 @@ export const SYNC_DELAY = 10 * 1000
 
 export enum CONNECT_CODES {
   CLOSE_AUTO_SYNC = 1001,
-  OPEN_AUTO_SYNC
+  OPEN_AUTO_SYNC,
+  START_SYNC
 }

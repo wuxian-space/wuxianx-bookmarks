@@ -18,7 +18,13 @@ const formRef = useTemplateRef('formRef');
 
 const ignoreVisible = ref(false);
 
-const attrs = useAttrs();
+const _attrs = useAttrs();
+const attrs = {
+  shape: 'circle',
+  size: 'medium',
+  theme: 'primary',
+  ..._attrs
+};
 </script>
 
 <template>
@@ -72,7 +78,7 @@ const attrs = useAttrs();
     </template>
   </t-dialog>
   <slot>
-    <t-button v-bind="attrs" style="margin-left: auto" shape="circle" size="medium" theme="primary" variant="text" @click="visible = true">
+    <t-button v-bind="attrs" @click="visible = true">
       <template #icon><cloud-upload-icon /></template>
     </t-button>
   </slot>

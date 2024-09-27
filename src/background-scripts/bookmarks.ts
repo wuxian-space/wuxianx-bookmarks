@@ -2,8 +2,8 @@ import { debounce } from 'lodash-es'
 import { getTree } from '@/api/bookmarks';
 import { upsertBookmarksData } from '@/api/github';
 import { CONNECT_CODES, BACKGROUND_CONNECT_NAME, SYNC_DELAY } from '@/constants'
-import { toSyncBookmarks } from '@/stores/useBookmarks';
 import { _getSettings, Settings } from '@/stores/useSettings';
+import { toSyncBookmarks } from '@/common';
 
 
 export default async function () {
@@ -11,16 +11,18 @@ export default async function () {
 
   let settings: Settings
 
+  const syncTree = async () => {
+    const tree = await getTree()
+    const syncTree = toSyncBookmarks(tree, settings?.ignores)
+    await upsertBookmarksData(JSON.stringify(syncTree));
+  }
+
   const change = debounce(async (type: 'created' | 'removed' | 'moved' | 'changed' | 'childrenReordered', data?: any) => {
     console.log(`🚀 > background-script -> bookmarks ${type}.`, data);
 
     chrome.action.setBadgeText({ text: '...' })
 
-    const tree = await getTree()
-
-    const syncTree = toSyncBookmarks(tree, settings?.ignores)
-
-    await upsertBookmarksData(JSON.stringify(syncTree));
+    await syncTree()
 
     chrome.action.setBadgeText({ text: '' })
   }, SYNC_DELAY)
@@ -107,6 +109,9 @@ export default async function () {
           break;
         case CONNECT_CODES.CLOSE_AUTO_SYNC:
           closeListeningBookmarksChanges()
+          break;
+        case CONNECT_CODES.START_SYNC:
+          syncTree()
           break;
       }
     });

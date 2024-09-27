@@ -90,7 +90,6 @@ export default defineStore('settings', () => {
     ignores.value = userSettings.value.ignores || []
   }
 
-
   return {
     userSettings,
     githubToken,
