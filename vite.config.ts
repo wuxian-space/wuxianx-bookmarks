@@ -107,7 +107,7 @@ function buildThemes() {
 
 function copyChromeExtManifest() {
   let config: ResolvedConfig
-  const manifestName = 'chrome-ext-manifest.json'
+  const extDir = 'chrome-extension'
 
   function copy() {
     const { root, build } = config
@@ -116,7 +116,9 @@ function copyChromeExtManifest() {
 
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir)
 
-    fs.cpSync(path.join(root, manifestName), path.join(outDir, 'manifest.json'))
+    fs.cpSync(path.join(root, extDir), outDir, {
+      recursive: true
+    })
 
     fs.cpSync(path.join(root, 'icons'), path.join(outDir, 'icons'), {
       recursive: true
@@ -133,10 +135,10 @@ function copyChromeExtManifest() {
     configureServer(server) {
       const { watcher } = server
 
-      watcher.add(path.join(config.root, manifestName))
+      watcher.add(path.join(config.root, extDir))
 
       watcher.on('change', (p) => {
-        if (path.basename(p) !== manifestName) return
+        if (!p.startsWith(path.join(config.root, extDir))) return
 
         copy()
       })
