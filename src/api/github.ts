@@ -25,8 +25,8 @@ async function createOctokit() {
       throw new Error('Not authenticated')
     }
 
-    options.owner = parsedRepoUrl.owner
-    options.repo = parsedRepoUrl.repo
+    if (options.owner === '') options.owner = parsedRepoUrl.owner
+    if (options.repo === '') options.repo = parsedRepoUrl.repo
   })
 
   // octokit.hook.after('request', () => {

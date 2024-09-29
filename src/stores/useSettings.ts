@@ -114,13 +114,18 @@ export async function _getSettings() {
 
   if (!localSettings?.githubToken || !localSettings?.url) return settings
 
-  const remoteSettings = await getRemoteSettings()
-  settings = {
-    ...localSettings,
-    ...remoteSettings,
-  }
+  try {
+    const remoteSettings = await getRemoteSettings()
 
-  settings.ignores = remoteSettings.ignores || []
+    settings = {
+      ...localSettings,
+      ...remoteSettings,
+    }
+
+    settings.ignores = remoteSettings.ignores || []
+  } catch (error) {
+
+  }
 
   return settings
 }
