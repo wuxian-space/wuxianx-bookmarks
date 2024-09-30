@@ -1,10 +1,36 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import Settings from '@/components/settings/sync-settings.vue';
+import { CONNECT_CODES, SERVICE_NAME } from '@/constants';
+
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.name !== SERVICE_NAME) return;
+  console.log(`🚀 > request:`, request);
+
+  switch (request.code) {
+    case CONNECT_CODES.BOOKMARKS_CHANGED:
+      send();
+      break;
+  }
+
+  return true
+});
 
 const targetWin = ref<HTMLIFrameElement>();
 
-const send = async () => {
+onMounted(() => {
+  if (targetWin.value) {
+    targetWin.value.onload = () => {
+      send();
+    };
+  }
+});
+
+const defaultIndex = chrome.runtime.getURL('themes/index.html');
+const url = import.meta.env.VITE_DEV_URL;
+const src = ref(url ? url : defaultIndex);
+
+async function send() {
   const tree = await chrome.bookmarks.getTree();
 
   targetWin.value?.contentWindow?.postMessage(
@@ -17,21 +43,7 @@ const send = async () => {
     },
     '*'
   );
-};
-
-chrome.bookmarks.onChanged.addListener(send);
-
-onMounted(() => {
-  if (targetWin.value) {
-    targetWin.value.onload = (e) => {
-      send();
-    };
-  }
-});
-
-const defaultIndex = chrome.runtime.getURL('themes/index.html');
-const url = import.meta.env.VITE_DEV_URL;
-const src = ref(url ? url : defaultIndex);
+}
 </script>
 
 <template>

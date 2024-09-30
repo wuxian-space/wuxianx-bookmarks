@@ -16,7 +16,8 @@
   "permissions": [
     "activeTab",
     "bookmarks",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "background": {
     "service_worker": "background.js",

@@ -1,7 +1,9 @@
 import { debounce } from 'lodash-es'
+import wait from 'wait'
+import browser from 'webextension-polyfill'
 import { getTree } from '@/api/bookmarks';
 import { upsertBookmarksData } from '@/api/github';
-import { CONNECT_CODES, BACKGROUND_CONNECT_NAME, SYNC_DELAY } from '@/constants'
+import { CONNECT_CODES, CLIENT_NAME, SYNC_DELAY, SERVICE_NAME } from '@/constants'
 import { _getSettings, Settings } from '@/stores/useSettings';
 import { toSyncBookmarks } from '@/common';
 
@@ -11,21 +13,31 @@ export default async function () {
 
   let settings: Settings
 
-  const syncTree = async () => {
-    const tree = await getTree()
-    const syncTree = toSyncBookmarks(tree, settings?.ignores)
-    await upsertBookmarksData(JSON.stringify(syncTree));
-  }
-
-  const change = debounce(async (type: 'created' | 'removed' | 'moved' | 'changed' | 'childrenReordered', data?: any) => {
-    console.log(`🚀 > background-script -> bookmarks ${type}.`, data);
+  const startSync = debounce(async () => {
+    console.log('startSync')
+    if (!settings?.githubToken || !settings.autoSync) return;
 
     chrome.action.setBadgeText({ text: '...' })
 
-    await syncTree()
+    const tree = await getTree()
+    const syncTree = toSyncBookmarks(tree, settings?.ignores)
+    // await upsertBookmarksData(JSON.stringify(syncTree));
 
     chrome.action.setBadgeText({ text: '' })
+
+    chrome.notifications.create('sync-bookmarks-success', {
+      type: 'basic',
+      iconUrl: '/icons/icon.png',
+      title: `Wuxian Bookmarks`,
+      message: 'Bookmarks have been successfully synchronized.',
+    })
   }, SYNC_DELAY)
+
+  const change = async (type: 'created' | 'removed' | 'moved' | 'changed' | 'childrenReordered', data?: any) => {
+    chrome.runtime.sendMessage({ name: SERVICE_NAME, code: CONNECT_CODES.BOOKMARKS_CHANGED, data: { type, data } })
+
+    startSync()
+  }
 
   const onCreated: chrome.events.GetEventType<typeof bookmarks.onCreated> = (...args) => {
     change('created', args)
@@ -70,8 +82,7 @@ export default async function () {
   }
 
   function startListeningBookmarksChanges() {
-    if (!settings?.githubToken) return;
-
+    console.log('started')
     bookmarks.onCreated.addListener(onCreated)
 
     bookmarks.onRemoved.addListener(onRemoved)
@@ -85,6 +96,7 @@ export default async function () {
     bookmarks.onImportEnded.addListener(onImportEnded)
   }
 
+  // @ts-ignore
   function closeListeningBookmarksChanges() {
     bookmarks.onCreated.removeListener(onCreated)
 
@@ -99,29 +111,23 @@ export default async function () {
     bookmarks.onImportEnded.removeListener(onImportEnded)
   }
 
-  chrome.runtime.onConnect.addListener(port => {
-    if (port.name !== BACKGROUND_CONNECT_NAME) return;
+  try {
+    browser.runtime.onMessage.addListener(async function (request: any, _, sendResponse) {
+      if (request.name !== CLIENT_NAME) return;
 
-    port.onMessage.addListener(function (msg) {
-      switch (msg.code) {
+      await wait(3000)
+      switch (request.code) {
         case CONNECT_CODES.OPEN_AUTO_SYNC:
-          startListeningBookmarksChanges()
-          break;
-        case CONNECT_CODES.CLOSE_AUTO_SYNC:
-          closeListeningBookmarksChanges()
-          break;
-        case CONNECT_CODES.START_SYNC:
-          syncTree()
+          await startSync()
           break;
       }
-    });
-  })
 
-  try {
+      sendResponse('success')
+      return true
+    });
+
+    startListeningBookmarksChanges()
     settings = await _getSettings()
-    if (settings?.autoSync) {
-      startListeningBookmarksChanges()
-    }
   } catch (error) { }
 }
 

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { isPlainObject, debounce } from 'lodash-es'
 import { getContent, getUserinfo, upsertUserSettings } from '@/api/github'
-import { BACKGROUND_CONNECT_NAME, CONNECT_CODES, STORAGE_KEY, SYNC_DELAY, USER_SETTINGS_FILENAME } from '@/constants'
+import { CLIENT_NAME, CONNECT_CODES, STORAGE_KEY, SYNC_DELAY, USER_SETTINGS_FILENAME } from '@/constants'
 import { getStorage, setStorage } from '@/utils/storage'
 import { parseGithubUrl } from '@/utils/common'
 
@@ -24,15 +24,6 @@ type SettingsKeys = keyof Settings
 
 
 export default defineStore('settings', () => {
-  let runtimeConnect: chrome.runtime.Port
-  try {
-    runtimeConnect = chrome.runtime.connect(undefined, {
-      name: BACKGROUND_CONNECT_NAME
-    });
-  } catch (error) {
-    console.error(`🚀 > chrome.runtime.connect -> error:`, error);
-  }
-
   const userSettings = ref<Settings>({
     ignores: []
   })
@@ -71,17 +62,19 @@ export default defineStore('settings', () => {
       await setStorage(STORAGE_KEY, localSettings)
 
       if (key === 'githubToken' || key === 'url') {
-        await getRemoteSettings()
+        // await getRemoteSettings()
       }
 
       return;
     }
 
     const { githubToken, url, ...rest } = userSettings.value
-    await upsertUserSettings(rest)
+    // await upsertUserSettings(rest)
 
     if (key === 'autoSync') {
-      runtimeConnect?.postMessage({ code: userSettings.value.autoSync ? CONNECT_CODES.OPEN_AUTO_SYNC : CONNECT_CODES.CLOSE_AUTO_SYNC });
+
+      const res = await chrome.runtime.sendMessage({ name: CLIENT_NAME, code: userSettings.value.autoSync ? CONNECT_CODES.OPEN_AUTO_SYNC : CONNECT_CODES.CLOSE_AUTO_SYNC })
+      console.log(`🚀 > updateSettings > res:`, res);
     }
   }, SYNC_DELAY)
 
