@@ -1,8 +1,10 @@
+import browser from 'webextension-polyfill'
+
 import runBookmarksScript from './bookmarks'
 
 runBookmarksScript()
 
-chrome.action.onClicked.addListener(() => {
-  const home = chrome.runtime.getURL('index.html');
-  chrome.tabs.create({ url: home })
+browser.action.onClicked.addListener(() => {
+  const home = browser.runtime.getURL('index.html');
+  browser.tabs.create({ url: home })
 });

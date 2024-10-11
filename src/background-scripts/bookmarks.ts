@@ -9,7 +9,7 @@ import { toSyncBookmarks } from '@/common';
 
 
 export default async function () {
-  const bookmarks = chrome.bookmarks
+  const bookmarks = browser.bookmarks
 
   let settings: Settings
 
@@ -17,15 +17,15 @@ export default async function () {
     console.log('startSync')
     if (!settings?.githubToken || !settings.autoSync) return;
 
-    chrome.action.setBadgeText({ text: '...' })
+    browser.action.setBadgeText({ text: '...' })
 
     const tree = await getTree()
     const syncTree = toSyncBookmarks(tree, settings?.ignores)
     // await upsertBookmarksData(JSON.stringify(syncTree));
 
-    chrome.action.setBadgeText({ text: '' })
+    browser.action.setBadgeText({ text: '' })
 
-    chrome.notifications.create('sync-bookmarks-success', {
+    browser.notifications.create('sync-bookmarks-success', {
       type: 'basic',
       iconUrl: '/icons/icon.png',
       title: `Wuxian Bookmarks`,
@@ -34,31 +34,31 @@ export default async function () {
   }, SYNC_DELAY)
 
   const change = async (type: 'created' | 'removed' | 'moved' | 'changed' | 'childrenReordered', data?: any) => {
-    chrome.runtime.sendMessage({ name: SERVICE_NAME, code: CONNECT_CODES.BOOKMARKS_CHANGED, data: { type, data } })
+    browser.runtime.sendMessage({ name: SERVICE_NAME, code: CONNECT_CODES.BOOKMARKS_CHANGED, data: { type, data } })
 
     startSync()
   }
 
-  const onCreated: chrome.events.GetEventType<typeof bookmarks.onCreated> = (...args) => {
+  const onCreated: browser.events.GetEventType<typeof bookmarks.onCreated> = (...args) => {
     change('created', args)
   }
 
-  const onRemoved: chrome.events.GetEventType<typeof bookmarks.onRemoved> = (...args) => {
+  const onRemoved: browser.events.GetEventType<typeof bookmarks.onRemoved> = (...args) => {
     change('removed', args)
   }
 
-  const onMoved: chrome.events.GetEventType<typeof bookmarks.onMoved> = (...args) => {
+  const onMoved: browser.events.GetEventType<typeof bookmarks.onMoved> = (...args) => {
     change('moved', args)
   }
 
-  const onChanged: chrome.events.GetEventType<typeof bookmarks.onChanged> = (...args) => {
+  const onChanged: browser.events.GetEventType<typeof bookmarks.onChanged> = (...args) => {
     change('changed', args)
   }
 
-  const onImportBegan: chrome.events.GetEventType<typeof bookmarks.onImportBegan> = () => {
+  const onImportBegan: browser.events.GetEventType<typeof bookmarks.onImportBegan> = () => {
     /**
      * 导入书签的时候会一直触发 onCreated and onChange，这里需要先停掉监听，避免高开销
-     * @see https://developer.chrome.com/docs/extensions/reference/api/bookmarks?hl=zh-cn#event-onImportBegan
+     * @see https://developer.browser.com/docs/extensions/reference/api/bookmarks?hl=zh-cn#event-onImportBegan
      */
 
     if (bookmarks.onCreated.hasListener(onCreated)) {
@@ -70,7 +70,7 @@ export default async function () {
     }
   }
 
-  const onImportEnded: chrome.events.GetEventType<typeof bookmarks.onImportEnded> = () => {
+  const onImportEnded: browser.events.GetEventType<typeof bookmarks.onImportEnded> = () => {
     // 书签导入完成后继续重启监听 onCreated and onChanged
     if (!bookmarks.onCreated.hasListener(onCreated)) {
       bookmarks.onCreated.addListener(onCreated)

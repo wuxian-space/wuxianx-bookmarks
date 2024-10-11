@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import browser from 'webextension-polyfill'
 function toHome() {
-  const home = chrome.runtime.getURL('index.html');
+  const home = browser.runtime.getURL('index.html');
   window.open(home, '_blank');
 }
 
-chrome.action.onClicked.addListener(toHome);
+browser.action.onClicked.addListener(toHome);
 </script>
 
 <template>

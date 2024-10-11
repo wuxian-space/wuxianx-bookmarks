@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import browser from 'webextension-polyfill'
 import { isPlainObject, debounce } from 'lodash-es'
 import { getContent, getUserinfo, upsertUserSettings } from '@/api/github'
 import { CLIENT_NAME, CONNECT_CODES, STORAGE_KEY, SYNC_DELAY, USER_SETTINGS_FILENAME } from '@/constants'
@@ -7,6 +8,21 @@ import { getStorage, setStorage } from '@/utils/storage'
 import { parseGithubUrl } from '@/utils/common'
 
 type Ignores = string[]
+
+type C = chrome.bookmarks.BookmarkTreeNode
+const c: C = {
+  id: 'abc',
+  title: 'test',
+}
+console.log(c.pinyin)
+
+type B = browser.Bookmarks.BookmarkTreeNode
+const b: B = {
+  id: 'abc',
+  title: 'test',
+}
+console.log(b.pinyin)
+
 
 export interface Settings {
   url?: string
@@ -72,8 +88,7 @@ export default defineStore('settings', () => {
     // await upsertUserSettings(rest)
 
     if (key === 'autoSync') {
-
-      const res = await chrome.runtime.sendMessage({ name: CLIENT_NAME, code: userSettings.value.autoSync ? CONNECT_CODES.OPEN_AUTO_SYNC : CONNECT_CODES.CLOSE_AUTO_SYNC })
+      const res = await browser.runtime.sendMessage({ name: CLIENT_NAME, code: userSettings.value.autoSync ? CONNECT_CODES.OPEN_AUTO_SYNC : CONNECT_CODES.CLOSE_AUTO_SYNC })
       console.log(`🚀 > updateSettings > res:`, res);
     }
   }, SYNC_DELAY)

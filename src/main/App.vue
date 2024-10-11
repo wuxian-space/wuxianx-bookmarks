@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import browser from 'webextension-polyfill'
 import Settings from '@/components/settings/sync-settings.vue';
 import { CONNECT_CODES, SERVICE_NAME } from '@/constants';
 
-chrome.runtime.onMessage.addListener(function (request) {
+browser.runtime.onMessage.addListener(function (request) {
   if (request.name !== SERVICE_NAME) return;
   console.log(`🚀 > request:`, request);
 
@@ -26,12 +27,12 @@ onMounted(() => {
   }
 });
 
-const defaultIndex = chrome.runtime.getURL('themes/index.html');
+const defaultIndex = browser.runtime.getURL('themes/index.html');
 const url = import.meta.env.VITE_DEV_URL;
 const src = ref(url ? url : defaultIndex);
 
 async function send() {
-  const tree = await chrome.bookmarks.getTree();
+  const tree = await browser.bookmarks.getTree();
 
   targetWin.value?.contentWindow?.postMessage(
     {

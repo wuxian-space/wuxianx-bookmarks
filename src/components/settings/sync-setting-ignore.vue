@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import type { Bookmarks } from 'webextension-polyfill';
 import useSettings from '@/stores/useSettings';
 import { getTree } from '@/api/bookmarks';
 
@@ -9,7 +10,7 @@ const visible = defineModel<boolean>('visible', { default: false });
 const settingsStore = useSettings();
 const { ignores } = storeToRefs(settingsStore);
 
-const bookmarks = ref<chrome.bookmarks.BookmarkTreeNode[]>([]);
+const bookmarks = ref<Bookmarks.BookmarkTreeNode[]>([]);
 
 getTree().then((res) => {
   bookmarks.value = res;

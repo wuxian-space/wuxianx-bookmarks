@@ -165,7 +165,9 @@ function createRollupOptions() {
         if (name === 'background') return 'background.js'
 
         return `assets/[name]-[hash].js`
-      }
+      },
+
+      sourcemap: true
     },
   }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "build:watch": "cross-env VITE_DEV_URL=http://192.168.1.87:7494/ pnpm build --watch",
+    "build:watch": "cross-env VITE_DEV_URL=http://localhost:7494/ pnpm build --watch",
     "dev:themes": "cd themes && pnpm dev",
     "start": "run-p \"dev:themes\" \"build:watch\""
   },
